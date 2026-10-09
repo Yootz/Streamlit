@@ -184,6 +184,7 @@ def make_metric_chart(dataframe, date_column, location_column, show_all_location
 			y=metric_column,
 			color=group_column,
 			markers=True,
+			render_mode="auto",
 			title=f"Tren {label.lower()}",
 			labels={metric_column: f"{label} ({unit})" if unit else label, date_column: "Tanggal"},
 		)
@@ -264,9 +265,12 @@ if summary_items:
 	for column, (title, value) in zip(summary_columns, summary_items):
 		column.metric(title, value)
 
-tabs = st.tabs([section[0] for section in METRIC_SECTIONS])
-for tab, (section_title, metrics) in zip(tabs, METRIC_SECTIONS):
-	with tab:
+	
+selected_section = st.selectbox("Kategori analisis", [section[0] for section in METRIC_SECTIONS])
+for section_title, metrics in METRIC_SECTIONS:
+	if section_title != selected_section:
+		continue
+	with st.container():
 		section_available = [metric for metric in metrics if metric[0] in available_metrics]
 		section_missing = [metric[0] for metric in metrics if metric[0] not in available_metrics]
 
